@@ -6,6 +6,7 @@ tests/e2e/.fixtures/
 .venv-mutmut
 mutants/
 .env
+config.local.yaml
 .claude
 CLAUDE.local.md
 .newenv

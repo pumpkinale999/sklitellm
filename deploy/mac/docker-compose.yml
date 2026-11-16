@@ -1,0 +1,23 @@
+# Mac local Postgres for LiteLLM Proxy (host 5433 → avoid clashing with skdev :5432)
+services:
+  db:
+    image: postgres:16
+    container_name: litellm-dev-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: litellm
+      POSTGRES_USER: llmproxy
+      POSTGRES_PASSWORD: dbpassword9090
+    ports:
+      - "5433:5432"
+    volumes:
+      - litellm_dev_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d litellm -U llmproxy"]
+      interval: 1s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  litellm_dev_postgres_data:
+    name: litellm_dev_postgres_data
