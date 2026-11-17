@@ -53,22 +53,28 @@ if [[ ! -f /etc/litellm/litellm.env ]]; then
   exit 1
 fi
 
-# Quote GENERIC_SCOPE; ensure SERVER_ROOT_PATH=/litellm (UI subpath)
+# Quote GENERIC_SCOPE; ensure SERVER_ROOT_PATH + GENERIC_USER_ROLE_ATTRIBUTE
 sudo python3 - <<'PY'
 from pathlib import Path
 p = Path("/etc/litellm/litellm.env")
 lines = p.read_text().splitlines()
 out = []
 seen_root = False
+seen_role = False
 for line in lines:
     if line.startswith("GENERIC_SCOPE=") and not line.startswith('GENERIC_SCOPE="'):
         line = 'GENERIC_SCOPE="%s"' % line.split("=", 1)[1]
     if line.startswith("SERVER_ROOT_PATH="):
         line = "SERVER_ROOT_PATH=/litellm"
         seen_root = True
+    if line.startswith("GENERIC_USER_ROLE_ATTRIBUTE="):
+        line = "GENERIC_USER_ROLE_ATTRIBUTE=role"
+        seen_role = True
     out.append(line)
 if not seen_root:
     out.append("SERVER_ROOT_PATH=/litellm")
+if not seen_role:
+    out.append("GENERIC_USER_ROLE_ATTRIBUTE=role")
 p.write_text("\\n".join(out) + "\\n")
 PY
 
