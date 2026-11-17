@@ -282,6 +282,7 @@ skstudio「我 › 系统管理 › LiteLLM」提供两个 **Usage 深链**（�
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
+| v0.6.5 | 2026-11-17 | §2.1：修 webview JWT——main 同步 cacheAuthToken + host `executeJavaScript` 注入（原 sendSync 异步取 token 必空） |
 | v0.6.4 | 2026-11-17 | §2.1：壳内 webview 打开 Admin UI + `sso-resume` 兜底；废止「请先登录」死页 |
 | v0.6.3 | 2026-11-17 | §6：`SERVER_ROOT_PATH=/litellm` + Nginx `/ui`→`/litellm/ui` 兜底；修 Admin UI 307 到站点根 404 |
 | v0.6.2 | 2026-11-17 | §6：对外钉死 `https://skportal.shukun.net/litellm`；`deploy/skportal/` 装机 |
