@@ -1,0 +1,23 @@
+[Unit]
+Description=LiteLLM Proxy (source venv @ /opt/litellm, host Postgres)
+After=network-online.target postgresql.service
+Wants=network-online.target postgresql.service
+
+[Service]
+Type=simple
+User=devops
+Group=devops
+WorkingDirectory=/opt/litellm
+EnvironmentFile=-/etc/litellm/litellm.env
+Environment=PATH=/opt/litellm/.venv/bin:/usr/local/bin:/usr/bin
+ExecStart=/opt/litellm/.venv/bin/litellm \
+  --config /opt/litellm/deploy/skportal/config.yaml \
+  --host 127.0.0.1 \
+  --port 4000
+Restart=on-failure
+RestartSec=5
+# Long-running proxy
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

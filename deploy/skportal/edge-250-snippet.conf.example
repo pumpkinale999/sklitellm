@@ -1,0 +1,21 @@
+# Fragment for TLS edge 10.20.21.250 (DigiCert *.shukun.net).
+# Mirror bbs.shukun.net / skfield.shukun.net: proxy to 10.20.19.251 with Host preserved.
+#
+# server {
+#     listen 443 ssl;
+#     server_name skportal.shukun.net;
+#     # … ssl_certificate DigiCert …
+#     location / {
+#         proxy_pass https://10.20.19.251;
+#         proxy_ssl_verify off;   # 251 uses self-signed
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Forwarded-Proto https;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_http_version 1.1;
+#         proxy_set_header Upgrade $http_upgrade;
+#         proxy_set_header Connection "upgrade";
+#     }
+# }
+#
+# DNS: skportal.shukun.net → 10.20.21.250 (already observed).

@@ -1,0 +1,54 @@
+# /etc/nginx/sites-available/skportal
+# Enable: sudo ln -sf /etc/nginx/sites-available/skportal /etc/nginx/sites-enabled/skportal
+# Root path reserved for future skportal app; LiteLLM under /litellm/
+#
+# Path model (must match SERVER_ROOT_PATH=/litellm in litellm.env):
+#   Browser and upstream both see /litellm/... (Nginx does NOT strip).
+#   LiteLLM mounts Admin UI + assets under /litellm when SERVER_ROOT_PATH is set.
+
+server {
+    listen 80;
+    listen 443 ssl;
+    server_name skportal.shukun.net;
+
+    ssl_certificate     /etc/nginx/ssl/selfsigned.crt;
+    ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
+
+    # Future portal app can claim location / here.
+    location = / {
+        default_type text/plain;
+        return 200 "skportal — LiteLLM at /litellm/\n";
+    }
+
+    # Legacy / mistaken Admin UI paths (no /litellm prefix) → canonical
+    location = /ui {
+        return 301 /litellm/ui/;
+    }
+    location /ui/ {
+        return 301 /litellm$request_uri;
+    }
+
+    # Preserve /litellm prefix → LiteLLM (SERVER_ROOT_PATH=/litellm)
+    location /litellm/ {
+        proxy_pass http://127.0.0.1:4000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Prefix /litellm;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+        client_max_body_size 50m;
+        # Belt-and-suspenders if any upstream Location still points at /ui/
+        proxy_redirect ~^https?://[^/]+(/ui/.*)$ /litellm$1;
+        proxy_redirect ~^(/ui/.*)$ /litellm$1;
+    }
+
+    # Exact /litellm → /litellm/
+    location = /litellm {
+        return 301 /litellm/;
+    }
+}

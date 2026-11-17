@@ -1,15 +1,21 @@
 # Copy to repo root as config.local.yaml:
 #   cp deploy/mac/config.yaml.example config.local.yaml
+#
+# key/base 来自 .env：OPENAI_API_KEY / OPENAI_API_BASE
+# 须用 openai/*（1.109.1 下 custom_openai/* 不会填充 /v1/models）
+# 调用：my-gw/<上游模型 id>
 
 model_list:
-  - model_name: gpt-4o-mini
+  - model_name: my-gw/*
     litellm_params:
-      model: openai/gpt-4o-mini
+      model: openai/*
       api_key: os.environ/OPENAI_API_KEY
+      api_base: os.environ/OPENAI_API_BASE
 
 litellm_settings:
   drop_params: true
   set_verbose: false
+  check_provider_endpoint: true
 
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY

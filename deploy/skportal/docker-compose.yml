@@ -1,0 +1,6 @@
+# Deprecated for skportal runtime.
+# Proxy now runs from host venv (/opt/litellm/.venv) so source edits are easy
+# and we reuse host Postgres — see litellm.service + publish.sh.
+#
+# Kept only as reference; do not `docker compose up` on skportal.
+services: {}
