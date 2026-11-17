@@ -44,6 +44,8 @@
 
 - Admin UI：**skstudio OIDC SSO**。
 - **范围锁死**：仅服务 LiteLLM Admin UI；不做万能未来 SSO。
+- **混合端（壳）**：桌面壳内「打开 Admin UI / 用量」用 **Electron webview**（`persist:skstudio` + `community-preload` 在 `skbizmgmt.shukun.net` 注入 `skstudio_token`），**禁止**默认 `openExternal` 指望系统浏览器已有 JWT。
+- **无登录态兜底**：authorize 中间页读 localStorage；若无 → `/me/system/litellm/sso-resume`（**RequireAuth 外**，同 Discourse）→ 企微 OAuth `return_to`（SSO 放行系统浏览器）→ 再带 `access_token` 回 authorize。
 - Client 固定：`litellm-admin-ui`；redirect 仅 LiteLLM 的 `/sso/callback`（完整 URL 随部署主机名）。
 - `sub` = skstudio `uid`（稳定、不可变）。
 - claim：`litellm_admin: boolean`（由 §2.2 规则算出）。
@@ -280,6 +282,7 @@ skstudio「我 › 系统管理 › LiteLLM」提供两个 **Usage 深链**（�
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
+| v0.6.4 | 2026-11-17 | §2.1：壳内 webview 打开 Admin UI + `sso-resume` 兜底；废止「请先登录」死页 |
 | v0.6.3 | 2026-11-17 | §6：`SERVER_ROOT_PATH=/litellm` + Nginx `/ui`→`/litellm/ui` 兜底；修 Admin UI 307 到站点根 404 |
 | v0.6.2 | 2026-11-17 | §6：对外钉死 `https://skportal.shukun.net/litellm`；`deploy/skportal/` 装机 |
 | v0.6.1 | 2026-11-17 | §6/§7：**LiteLLM@skportal 跨机**；`LITELLM_BASE_URL` 禁止 skstudio 本机 loopback |

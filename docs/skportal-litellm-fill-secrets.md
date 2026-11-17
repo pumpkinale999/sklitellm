@@ -48,7 +48,7 @@ curl -sS -X POST -H "Authorization: Bearer $GOAL_EXECUTION_SERVICE_TOKEN" \
 | 检查 | 期望 |
 |------|------|
 | `GET …/litellm/health/liveliness` | 200 |
-| Admin UI `…/litellm/ui` + OIDC | 仅 LLM 管理员进得去 |
+| Admin UI `…/litellm/ui` + OIDC | 仅 LLM 管理员进得去；**壳内**从「我 › LiteLLM」打开（webview SSO）；系统浏览器走 `sso-resume` / 企微 |
 | Usage `…/litellm/ui/usage?tab=models` | 管理员可见；**Location 不得**落到站点根 `/ui/…` |
 | 误访 `…/ui/usage/`（无 litellm 前缀） | Nginx **301** → `/litellm/ui/usage/` |
 | `GET /api/v1/llm/credentials` | `{ base_url: https://skportal.shukun.net/litellm, api_key, … }` |
